@@ -1,6 +1,12 @@
 // Define variable defaults
-$body-bg: lightgrey;
-$body-color: #111;
+$body-bg: gainsboro;
+$body-color: black;
+
+#app{
+  background-image: url("assets/fullSizedKoala.inverse.gif");
+  background-repeat: no-repeat;
+  background-position-y: 4rem;
+}
 
 // Then import Bootstrap an BootstrapVue SCSS files (order is important)
 @import '../node_modules/bootstrap/scss/bootstrap';

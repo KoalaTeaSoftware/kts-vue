@@ -1,0 +1,12 @@
+Color|	HTML / CSS Color Name |	Hex Code #RRGGBB |	Decimal Code (R,G,B)
+--- | --- | --- | --- |
+gainsboro|	#DCDCDC	|rgb(220,220,220)
+lightgray / lightgrey	|#D3D3D3|	rgb(211,211,211)
+silver	|#C0C0C0|	rgb(192,192,192)
+darkgray / darkgrey|	#A9A9A9	|rgb(169,169,169)
+gray / grey|	#808080	|rgb(128,128,128)
+dimgray / dimgrey	|#696969	|rgb(105,105,105)
+lightslategray / lightslategrey|	#778899	|rgb(119,136,153)
+slategray / slategrey|	#708090	|rgb(112,128,144)
+darkslategray / darkslategrey	|#2F4F4F	|rgb(47,79,79)
+black	|#000000|	rgb(0,0,0)
