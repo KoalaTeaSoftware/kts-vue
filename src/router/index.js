@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
-//import countryCodes from './countryCodes.js'
+
 import {routes} from './routes'
 
 const router = new VueRouter({

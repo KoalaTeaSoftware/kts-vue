@@ -29,12 +29,10 @@
 import {routes} from './router/routes'
 
 export default {
-  name: 'Navbar',
   data: function () {
     return {routes}
   }
 }
-
 </script>
 
 <style lang="scss">
