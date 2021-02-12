@@ -13,7 +13,7 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item
-              v-for="link in links"
+              v-for="link in routes"
               :key="link.id"
               :to="link.path"
           >{{ link.name }}
@@ -26,24 +26,12 @@
 </template>
 
 <script>
+import {routes} from './router/routes'
 
 export default {
   name: 'Navbar',
-  data() {
-    return {
-      links: [
-        {
-          id: 0,
-          name: 'Home',
-          path: '/',
-        },
-        {
-          id: 1,
-          name: 'About',
-          path: '/about',
-        }
-      ]
-    }
+  data: function () {
+    return {routes}
   }
 }
 
