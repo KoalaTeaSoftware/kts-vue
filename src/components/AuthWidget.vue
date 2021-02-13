@@ -1,10 +1,15 @@
 <template>
-  <b-modal id="auth-widget" title="Sign In" hide-footer>
-    <b-form @submit="logIn">
-      <b-form-group
-          id="adGroup"
-          label="Email Address:"
-          label-for="addressField">
+  <b-modal id="auth-widget" title="User Authentication" hide-footer>
+
+    <b-form v-if=this.currentUser id="log-out" @submit="logOut">
+      <b-button type="submit" variant="primary" :disabled=this.busy>
+        Log Out&nbsp;<b-spinner small v-show="busy" class="loadingSpinner"></b-spinner>
+        <span class="sr-only">Loading...</span>
+      </b-button>
+    </b-form>
+
+    <b-form v-else id="login-form" @submit="logIn">
+      <b-form-group label="Email Address:" label-for="addressField">
         <b-form-input
             id="addressField"
             v-model="creds.email"
@@ -12,20 +17,14 @@
             placeholder="a@b.com"
             required></b-form-input>
       </b-form-group>
-      <b-form-group
-          id="pwdGroup"
-          label="Password:"
-          label-for="pwdField"
-      >
+      <b-form-group label="Password:" label-for="pwdField">
         <b-form-input
             id="pwdField"
             v-model="creds.pwd"
             type="password"
             required></b-form-input>
       </b-form-group>
-      <p class="serverResponse" v-show="responseMsg"
-         :class="responseIsGood ? 'bg-success' : 'bg-warning'">{{ responseMsg }}
-      </p>
+      <p v-show="responseMsg" :class="responseIsGood ? 'bg-success' : 'bg-warning'">{{ responseMsg }}</p>
       <b-button type="submit" variant="primary" :disabled=this.busy>
         Log In&nbsp;<b-spinner small v-show="busy" class="loadingSpinner"></b-spinner>
         <span class="sr-only">Loading...</span>
@@ -36,6 +35,7 @@
 
 <script>
 import {BSpinner} from 'bootstrap-vue'
+import firebase from "firebase";
 
 export default {
   name: 'AuthWidget',
@@ -47,16 +47,60 @@ export default {
       },
       busy: false,
       responseMsg: "",
-      responseIsGood: false
+      responseIsGood: false,
+      currentUser: firebase.auth().currentUser
     }
   },
   methods: {
+    logOut(e) {
+      e.preventDefault();
+      this.creds.email = ""
+      this.creds.pwd = ""
+      firebase.auth().signOut()
+          .then(() => {
+            this.responseIsGood = true
+            this.responseMsg = "Logged Out"
+
+          })
+          .catch(reason => {
+            console.log("Log Out: Crashed logging user in >" + reason.code + "< >" + reason.message + "<");
+          })
+      this.currentUser = null
+    },
     logIn(e) {
       e.preventDefault();
-      this.busy = true
-      alert(JSON.stringify(this.creds))
-      this.responseMsg = "wtf?"
-      this.responseIsGood = true
+      if (document.getElementById('login-form').reportValidity()) {
+        this.busy = true
+        //https://firebase.google.com/docs/reference/js/firebase.auth.Auth#signinwithemailandpassword
+        firebase.auth().signInWithEmailAndPassword(this.creds.email, this.creds.pwd)
+            .then(() => {
+              this.currentUser = firebase.auth().currentUser
+              this.busy = false
+              this.responseIsGood = true
+              this.responseMsg = "Logged in"
+              this.$bvModal.hide('auth-widget')
+              console.log(`logged in the current user ${this.currentUser.email}`)
+            })
+            .catch(reason => {
+              this.currentUser = null
+              this.busy = false
+              this.responseIsGood = false
+              switch (reason.code) {
+                case 'auth/expired-action-code': //Thrown if the action code has expired.
+                case 'auth/invalid-action-code': //Thrown if the action code is invalid. This can happen if the code is malformed or has already been used.
+                  this.responseMsg = 'Unable to log in. Please try again later.'
+                  break;
+                case 'auth/user-disabled':       //Thrown if the user corresponding to the given action code has been disabled.
+                case 'auth/user-not-found':
+                case "auth/wrong-password":
+                  this.responseMsg = 'Unable to log in using those credentials.';
+                  break;
+                default:
+                  console.log("login: Crashed logging user in >" + reason.code + "< >" + reason.message + "<");
+                  this.responseMsg = 'Unable to log in. Something went wrong';
+              }
+            })
+      }
     }
   },
   components: {
