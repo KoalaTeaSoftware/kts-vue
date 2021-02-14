@@ -1,29 +1,14 @@
 Anyone that is logged-in will be able to edit, therefore, only editors should have credentials that let them log in
 
-Not working hard to make this dynamic
+As this is using Vue.js version 2x, the v-html attribute is needed to get the string that is read displayed as html in the div
 
 <template>
   <div class="editableDiv">
     <div :id="this.identity"
          :class="{'isEditable': this.currentUser}"
          @dblclick="editMe"
-    >
-      <h1>{{ mungeTitle(identity) }}</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi mattis nulla in lectus dapibus interdum. Duis
-        tempus ac diam id placerat. Aliquam vitae lacinia dolor, quis imperdiet nibh. Curabitur vitae interdum sapien.
-        Duis iaculis dui sed est lobortis euismod. Nullam mollis euismod lacus, et consectetur mi suscipit eu. Aliquam
-        erat volutpat. Sed urna dui, commodo quis venenatis eu, feugiat sed mi. Vestibulum ante ipsum primis in faucibus
-        orci luctus et ultrices posuere cubilia curae; Donec eget volutpat lectus, sed interdum nisl. Nulla facilisi.
-        Aliquam eu velit scelerisque, tincidunt arcu nec, aliquet nisl.
-      </p>
-      <p> In feugiat dictum est congue tempor. Cras sagittis feugiat ipsum, vitae consectetur lacus placerat eget. Sed
-        faucibus, enim quis tristique condimentum, ipsum ipsum commodo justo, et rhoncus mi quam quis ipsum. Maecenas
-        leo lorem, ornare vel nunc a, suscipit pulvinar mauris. Nulla enim dolor, faucibus non rhoncus id, elementum in
-        nisl. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nunc neque
-        turpis, laoreet in dapibus eget, porta et augue. Vivamus eu arcu sed est vestibulum efficitur eget ac enim.
-        Suspendisse potenti. Vestibulum suscipit vulputate ornare.
-      </p>
-    </div>
+         v-html="currentContents"
+    ></div>
   </div>
 </template>
 
@@ -31,16 +16,22 @@ Not working hard to make this dynamic
 import firebase from "firebase";
 
 export default {
-  name: "EditableDiv",
-  busy: false,
-  currentUser: null,
+  name: 'EditableDiv',
   props: {
     identity: name
   },
+  data() {
+    return {
+      name: "EditableDiv",
+      busy: true,
+      currentUser: null,
+      currentContents: "Loading ....",
+    }
+  },
   methods: {
-    mungeTitle(inString) {
-      return inString.replace(/-/g, ' ')
-    },
+    // mungeTitle(inString) {
+    //   return inString.replace(/-/g, ' ')
+    // },
     editMe() {
       if (firebase.auth().currentUser)
         alert("Edit called for")
@@ -49,8 +40,24 @@ export default {
     }
   },
   created() {
-    console.log("updated the editable div")
+    // console.log("updated the editable div")
     this.currentUser = firebase.auth().currentUser
+    // console.log("finding for " + this.identity)
+    firebase.firestore()
+        .collection("pages")
+        .where("pageName", "==", this.identity)
+        .get()
+        .then(querySnapshot => {
+          this.busy = false
+          // console.log("Got the following");
+          // console.log(querySnapshot.docs[0].data().contents);
+          this.currentContents = querySnapshot.docs[0].data().contents
+          // const readMD = querySnapshot.docs[0].data().contents;
+        })
+        .catch(function (error) {
+          console.log(`Unable to get, or show the page ${this.identity}: ${error}.`);
+          this.currentContents = "Failed to load the contents of this page."
+        });
   }
 }
 </script>
