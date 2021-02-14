@@ -1,36 +1,50 @@
+This widget comprises:
+1. an indication whether the user is logged-in, or not
+- this will always generate something to suit one of the two options
+2. Forms to allow the user to log in / out
+- The appropriate form is shown according to whether the user is logged-in or not
+- if login fails for some reason, the user gets some sort of response
 <template>
-  <b-modal id="auth-widget" title="User Authentication" hide-footer>
+  <div class="auth-widget">
+    <span v-if="currentUserAddress"
+          @click="$bvModal.show('auth-widget')">{{ currentUserAddress }}</span>
+    <img v-else src="@/assets/personWhite.svg"
+         @dblclick="$bvModal.show('auth-widget')"
+         alt="Anonymous user icon">
 
-    <b-form v-if=this.currentUser id="log-out" @submit="logOut">
-      <b-button type="submit" variant="primary" :disabled=this.busy>
-        Log Out&nbsp;<b-spinner small v-show="busy" class="loadingSpinner"></b-spinner>
-        <span class="sr-only">Loading...</span>
-      </b-button>
-    </b-form>
+    <b-modal id="auth-widget" title="User Authentication" hide-footer>
 
-    <b-form v-else id="login-form" @submit="logIn">
-      <b-form-group label="Email Address:" label-for="addressField">
-        <b-form-input
-            id="addressField"
-            v-model="creds.email"
-            type="email"
-            placeholder="a@b.com"
-            required></b-form-input>
-      </b-form-group>
-      <b-form-group label="Password:" label-for="pwdField">
-        <b-form-input
-            id="pwdField"
-            v-model="creds.pwd"
-            type="password"
-            required></b-form-input>
-      </b-form-group>
-      <p v-show="responseMsg" :class="responseIsGood ? 'bg-success' : 'bg-warning'">{{ responseMsg }}</p>
-      <b-button type="submit" variant="primary" :disabled=this.busy>
-        Log In&nbsp;<b-spinner small v-show="busy" class="loadingSpinner"></b-spinner>
-        <span class="sr-only">Loading...</span>
-      </b-button>
-    </b-form>
-  </b-modal>
+      <b-form v-if=this.currentUser id="log-out" @submit="logOut">
+        <b-button type="submit" variant="primary" :disabled=this.busy>
+          Log Out&nbsp;<b-spinner small v-show="busy" class="loadingSpinner"></b-spinner>
+          <span class="sr-only">Loading...</span>
+        </b-button>
+      </b-form>
+
+      <b-form v-else id="login-form" @submit="logIn">
+        <b-form-group label="Email Address:" label-for="addressField">
+          <b-form-input
+              id="addressField"
+              v-model="creds.email"
+              type="email"
+              placeholder="a@b.com"
+              required></b-form-input>
+        </b-form-group>
+        <b-form-group label="Password:" label-for="pwdField">
+          <b-form-input
+              id="pwdField"
+              v-model="creds.pwd"
+              type="password"
+              required></b-form-input>
+        </b-form-group>
+        <p v-show="responseMsg" :class="responseIsGood ? 'bg-success' : 'bg-warning'">{{ responseMsg }}</p>
+        <b-button type="submit" variant="primary" :disabled=this.busy>
+          Log In&nbsp;<b-spinner small v-show="busy" class="loadingSpinner"></b-spinner>
+          <span class="sr-only">Loading...</span>
+        </b-button>
+      </b-form>
+    </b-modal>
+  </div>
 </template>
 
 <script>
@@ -48,7 +62,8 @@ export default {
       busy: false,
       responseMsg: "",
       responseIsGood: false,
-      currentUser: firebase.auth().currentUser
+      currentUser: null,
+      currentUserAddress: ""
     }
   },
   methods: {
@@ -57,13 +72,13 @@ export default {
       this.creds.email = ""
       this.creds.pwd = ""
       firebase.auth().signOut()
-          .then(() => {
+          .then((success) => {
+            console.log("Log Out: Appears to have done it >" + success + "<");
             this.responseIsGood = true
             this.responseMsg = "Logged Out"
-
           })
           .catch(reason => {
-            console.log("Log Out: Crashed logging user in >" + reason.code + "< >" + reason.message + "<");
+            console.log("Log Out: Crashed logging user out >" + reason.code + "< >" + reason.message + "<");
           })
       this.currentUser = null
     },
@@ -105,11 +120,30 @@ export default {
   },
   components: {
     BSpinner
+  },
+  created: function () {
+    firebase.auth().onAuthStateChanged(user => {
+      console.log("Auth state has changed")
+      this.currentUser = firebase.auth().currentUser
+      if (this.currentUser) {
+        console.log(`Current user is now ${this.currentUser.email}`)
+        this.currentUserAddress = this.currentUser.email
+      } else {
+        console.log("Current user is undefined")
+        this.currentUserAddress = ""
+      }
+    })
   }
 }
 </script>
 
 <style scoped>
+div {
+  display: inline-block;
+  font-size: x-small;
+  font-style: italic;
+}
+
 .loadingSpinner {
   margin-left: 0.25rem;
 }

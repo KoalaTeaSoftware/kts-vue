@@ -1,8 +1,18 @@
+The App comprises two parts:
+1. The nav bar
+2. The view that has been dragged-up using the router
+
+In the nav-bar, the toggleable="md" makes the hamburger appear on screens smaller than medium-sized
+
+The  v-b-modal.auth-widget enables the clicking on the button to invoke the auth widget
+<b-button v-b-modal.auth-widget></b-button>
+But it not used now
+
 <template>
   <div id="app">
     <b-navbar id="nav" toggleable="md" type="dark" variant="dark">
-      <b-navbar-brand>
-        <b-button v-b-modal.auth-widget>Koala Tea Software</b-button>
+      <b-navbar-brand>Koala Tea Software
+        <AuthWidget></AuthWidget>
       </b-navbar-brand>
 
       <b-navbar-toggle target="collapsibleNav"></b-navbar-toggle>
@@ -10,7 +20,7 @@
       <b-collapse id="collapsibleNav" is-nav>
         <b-navbar-nav>
           <b-nav-item
-              v-for="link in routes"
+              v-for="link in routeList"
               :key="link.id"
               :to="link.path">
             {{ link.name }}
@@ -18,8 +28,8 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+
     <router-view/>
-    <AuthWidget></AuthWidget>
   </div>
 </template>
 
@@ -30,7 +40,7 @@ import AuthWidget from "@/components/AuthWidget";
 
 export default {
   data: function () {
-    return {routes}
+    return {routeList: routes}
   },
   components: {
     AuthWidget

@@ -1,14 +1,14 @@
 import Vue from 'vue'
-import App from './App.vue'
-import './registerServiceWorker'
 import router from './router'
 import firebase from "firebase";
-
 import {BootstrapVue} from 'bootstrap-vue'
+import App from './App.vue'
+import './registerServiceWorker'
 
 import './app.scss'
 
 Vue.use(BootstrapVue)
+Vue.config.productionTip = false
 
 const firebaseConfig = {
     apiKey: "AIzaSyCp3pebgWUQjlCnJhXRR3HlsocDkt1kpJs",
@@ -21,12 +21,8 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
 firebase.analytics();
 
-// const authEngine = firebase.auth();
-
-Vue.config.productionTip = false
 
 new Vue({
     router,
