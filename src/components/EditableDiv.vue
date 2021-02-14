@@ -1,11 +1,14 @@
 Anyone that is logged-in will be able to edit, therefore, only editors should have credentials that let them log in
 
+Not working hard to make this dynamic
+
 <template>
   <div class="editableDiv">
-    <span class="sr-only">Loading...</span>
     <div :id="this.identity"
-         :class="{'isEditable' : this.currentUser}">
-      <h1>{{ identity }}</h1>
+         :class="{'isEditable': this.currentUser}"
+         @dblclick="editMe"
+    >
+      <h1>{{ mungeTitle(identity) }}</h1>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi mattis nulla in lectus dapibus interdum. Duis
         tempus ac diam id placerat. Aliquam vitae lacinia dolor, quis imperdiet nibh. Curabitur vitae interdum sapien.
         Duis iaculis dui sed est lobortis euismod. Nullam mollis euismod lacus, et consectetur mi suscipit eu. Aliquam
@@ -30,20 +33,37 @@ import firebase from "firebase";
 export default {
   name: "EditableDiv",
   busy: false,
-  currentUser: firebase.auth().currentUser,
+  currentUser: null,
   props: {
     identity: name
   },
   methods: {
+    mungeTitle(inString) {
+      return inString.replace(/-/g, ' ')
+    },
     editMe() {
+      if (firebase.auth().currentUser)
+        alert("Edit called for")
+      else
+        alert("You can't edit me")
     }
+  },
+  created() {
+    console.log("updated the editable div")
+    this.currentUser = firebase.auth().currentUser
   }
 }
 </script>
 
 <style scoped>
 .isEditable {
-  background-image: url("/src/assets/pencil.svg");
+  background-image: url("../assets/pencil.svg");
   background-repeat: no-repeat;
+  background-size: 2rem;
+  background-position: .5rem .5rem;
+}
+
+h1 {
+  text-transform: capitalize
 }
 </style>
