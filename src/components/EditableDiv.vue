@@ -1,62 +1,66 @@
-Anyone that is logged-in will be able to edit, therefore, only editors should have credentials that let them log in
+This component uses a name property that gives the div that wraps it an ID attribute. This could be used by CSS.
 
-As this is using Vue.js version 2x, the v-html attribute is needed to get the string that is read displayed as html in the div
+The VueShowdown component is detailed in various places
+* https://github.com/showdownjs/showdown/wiki/Showdown's-Markdown-syntax
+* https://vue-showdown.js.org/
+
+NOTE: Anyone that is logged-in will be able to edit, therefore use the Firebase console to ensure that only editors
+have credentials that allow them log in
 
 <template>
-  <div class="editableDiv">
-    <div :id="this.identity"
-         :class="{'isEditable': this.currentUser}"
-         @dblclick="editMe"
-         v-html="currentContents"
-    ></div>
+  <div :id="this.identity"
+       :class="{'isEditable': this.currentUser}"
+       @dblclick="editMe"
+  >
+    <b-spinner small v-show="busy" class="loadingSpinner"></b-spinner>
+    <span class="sr-only" v-show="busy">Loading...</span>
+    <myNameForMdPanel
+        class="container"
+        flavor="github"
+        :options="{ emoji: true, tasklists : true }"
+        :markdown=this.mdVersion
+    />
+    <b-modal id="page-editor">
+      <div contenteditable="true">{{ mdVersion }}</div>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import firebase from "firebase";
+import {VueShowdown} from 'vue-showdown';
 
 export default {
-  name: 'EditableDiv',
-  props: {
-    identity: name
-  },
+  props: {identity: String},
+  components: {'myNameForMdPanel': VueShowdown},
   data() {
     return {
-      name: "EditableDiv",
       busy: true,
       currentUser: null,
-      currentContents: "Loading ....",
+      mdVersion: "Loading ...."
     }
   },
   methods: {
-    // mungeTitle(inString) {
-    //   return inString.replace(/-/g, ' ')
-    // },
     editMe() {
       if (firebase.auth().currentUser)
-        alert("Edit called for")
+        this.$bvModal.show('page-editor')
       else
         alert("You can't edit me")
     }
   },
   created() {
-    // console.log("updated the editable div")
     this.currentUser = firebase.auth().currentUser
-    // console.log("finding for " + this.identity)
     firebase.firestore()
         .collection("pages")
         .where("pageName", "==", this.identity)
         .get()
         .then(querySnapshot => {
           this.busy = false
-          // console.log("Got the following");
-          // console.log(querySnapshot.docs[0].data().contents);
-          this.currentContents = querySnapshot.docs[0].data().contents
-          // const readMD = querySnapshot.docs[0].data().contents;
+          this.mdVersion = querySnapshot.docs[0].data().contents
         })
         .catch(function (error) {
-          console.log(`Unable to get, or show the page ${this.identity}: ${error}.`);
-          this.currentContents = "Failed to load the contents of this page."
+          console.log(`Unable to get, or show the page: ${error}.`);
+          this.mdVersion = "Failed to load the contents of this page."
         });
   }
 }
