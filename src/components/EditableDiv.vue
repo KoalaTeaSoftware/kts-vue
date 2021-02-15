@@ -18,10 +18,16 @@ have credentials that allow them log in
         class="container"
         flavor="github"
         :options="{ emoji: true, tasklists : true }"
-        :markdown=this.mdVersion
+        :markdown=this.displayVersion
+        style="text-align: left"
     />
-    <b-modal id="page-editor">
-      <div contenteditable="true">{{ mdVersion }}</div>
+    <b-modal id="page-editor" size="xl" title="Editing the Page Contents">
+      <div v-show="this.serverError" class="bg-warning">{{ serverError }}</div>
+      <pre id="md-editing-area" contenteditable="true">{{ editVersion }}</pre>
+      <template #modal-footer="{ ok, cancel }">
+        <b-button size="lg" variant="outline-primary" @click="preview()">Preview</b-button>
+        <b-button size="sm" variant="warning" @click="publish()">Publish</b-button>
+      </template>
     </b-modal>
   </div>
 </template>
@@ -37,18 +43,44 @@ export default {
     return {
       busy: true,
       currentUser: null,
-      mdVersion: "Loading ...."
+      displayVersion: "",
+      editVersion: "Loading ....",
+      docId: null,
+      serverError: ""
     }
   },
   methods: {
+    preview() {
+      const editBlock = document.getElementById("md-editing-area")
+      this.displayVersion = editBlock.innerText
+      this.$bvModal.hide("page-editor")
+    },
+    publish() {
+      this.busy = true
+      firebase.firestore()
+          .collection("pages")
+          .doc(this.docId)
+          .update({contents: this.displayVersion})
+          .then(() => {
+            this.busy = false
+            console.log("Document Saved")
+            this.$bvModal.hide("page-editor")
+          })
+          .catch(e => {
+            this.busy = false
+            this.serverError = e.message
+            console.log("Unable to store the new data for page " + this.identity + ":" + e.message + ".");
+          })
+    },
     editMe() {
-      if (firebase.auth().currentUser)
+      if (firebase.auth().currentUser) {
+        this.editVersion = this.displayVersion
         this.$bvModal.show('page-editor')
-      else
+      } else
         alert("You can't edit me")
     }
   },
-  created() {
+  mounted() {
     this.currentUser = firebase.auth().currentUser
     firebase.firestore()
         .collection("pages")
@@ -56,12 +88,13 @@ export default {
         .get()
         .then(querySnapshot => {
           this.busy = false
-          this.mdVersion = querySnapshot.docs[0].data().contents
+          this.displayVersion = querySnapshot.docs[0].data().contents
+          this.docId = querySnapshot.docs[0].id
+          this.editVersion = this.displayVersion
         })
-        .catch(function (error) {
-          console.log(`Unable to get, or show the page: ${error}.`);
-          this.mdVersion = "Failed to load the contents of this page."
-        });
+        .catch(function (e) {
+          console.log(`Unable to get, or show the page: ${e.message}.`);
+        })
   }
 }
 </script>
@@ -77,4 +110,13 @@ export default {
 h1 {
   text-transform: capitalize
 }
+
+pre {
+  white-space: pre-wrap; /* css-3 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  /*   white-space: -pre-wrap; Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
 </style>
