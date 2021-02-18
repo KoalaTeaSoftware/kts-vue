@@ -44,6 +44,12 @@ export default {
   },
   components: {
     AuthWidget
+  },
+  mounted() {
+    console.log("app.mounted")
+    const jimmy = document.getElementById('koalaBlock')
+    jimmy.classList.add('fade-in')
+    jimmy.style.display = 'block'
   }
 }
 </script>

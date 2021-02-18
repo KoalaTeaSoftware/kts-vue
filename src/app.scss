@@ -2,13 +2,117 @@
 $body-bg: gainsboro;
 $body-color: black;
 
-#app{
-  background-image: url("assets/fullSizedKoala.inverse.gif");
-  background-repeat: no-repeat;
-  background-position-y: 4rem;
-  background-position-x: 1rem;
-}
-
 // Then import Bootstrap an BootstrapVue SCSS files (order is important)
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import '../node_modules/bootstrap-vue/src/index';
+
+$fade-in-speed: 5s;
+
+.fade-in {
+  animation: fadeIn ease $fade-in-speed;
+  -webkit-animation: fadeIn ease $fade-in-speed;
+  -moz-animation: fadeIn ease $fade-in-speed;
+  -o-animation: fadeIn ease $fade-in-speed;
+  //noinspection CssUnknownProperty
+  -ms-animation: fadeIn ease $fade-in-speed;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-out {
+  animation: fadeOut ease 1s;
+  -webkit-animation: fadeOut ease 1s;
+  -moz-animation: fadeOut ease 1s;
+  -o-animation: fadeOut ease 1s;
+  //noinspection CssUnknownProperty
+  -ms-animation: fadeOut ease 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-o-keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@-ms-keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
