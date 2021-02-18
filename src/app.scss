@@ -116,3 +116,75 @@ $fade-in-speed: 5s;
     opacity: 0;
   }
 }
+
+/* ********** */
+.fade-in-bounce {
+  animation: fadeInBounce ease $fade-in-speed;
+  -webkit-animation: fadeInBounce ease $fade-in-speed;
+  -moz-animation: fadeInBounce ease $fade-in-speed;
+  -o-animation: fadeInBounce ease $fade-in-speed;
+  //noinspection CssUnknownProperty
+  -ms-animation: fadeInBounce ease $fade-in-speed;
+  // this has to come at the end, it stops the thing falling back to its original state at the end of the nimation
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@-moz-keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@-webkit-keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@-o-keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@-ms-keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}

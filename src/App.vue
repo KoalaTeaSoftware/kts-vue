@@ -48,7 +48,7 @@ export default {
   mounted() {
     console.log("app.mounted")
     const jimmy = document.getElementById('koalaBlock')
-    jimmy.classList.add('fade-in')
+    jimmy.classList.add('fade-in-bounce')
     jimmy.style.display = 'block'
   }
 }

@@ -1,0 +1,68 @@
+.fade-in-bounce {
+  animation: fadeInBounce ease $fade-in-speed;
+  -webkit-animation: fadeInBounce ease $fade-in-speed;
+  -moz-animation: fadeInBounce ease $fade-in-speed;
+  -o-animation: fadeInBounce ease $fade-in-speed;
+  //noinspection CssUnknownProperty
+  -ms-animation: fadeInBounce ease $fade-in-speed;
+}
+
+@keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@-moz-keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@-webkit-keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@-o-keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@-ms-keyframes fadeInBounce {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 75%
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
