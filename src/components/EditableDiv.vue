@@ -9,7 +9,6 @@ have credentials that allow them log in
 
 <template>
   <div :id="this.identity"
-       :class="{'isEditable': this.currentUser}"
        @dblclick="editMe"
   >
     <b-spinner small v-show="busy" class="loadingSpinner"></b-spinner>
@@ -81,7 +80,12 @@ export default {
     }
   },
   mounted() {
-    this.currentUser = firebase.auth().currentUser
+    if (firebase.auth().currentUser) {
+      // This has to be done the hard way because we are in the 'mounted' function.
+      // If you make the presence of the class conditional (in the template) on an exported attribute,
+      // you make it remount and get a stack overflow
+      document.getElementById(this.identity).classList.add('isEditable')
+    }
     firebase.firestore()
         .collection("pages")
         .where("pageName", "==", this.identity)
@@ -100,6 +104,7 @@ export default {
 </script>
 
 <style scoped>
+/*noinspection CssUnusedSymbol*/
 .isEditable {
   background-image: url("../assets/pencil.svg");
   background-repeat: no-repeat;
