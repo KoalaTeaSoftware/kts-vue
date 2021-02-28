@@ -118,6 +118,7 @@ $fade-in-speed: 5s;
 }
 
 /* ********** */
+$bounceEnds: 0.1;
 .fade-in-bounce {
   animation: fadeInBounce ease $fade-in-speed;
   -webkit-animation: fadeInBounce ease $fade-in-speed;
@@ -137,7 +138,7 @@ $fade-in-speed: 5s;
     opacity: 75%
   }
   100% {
-    opacity: 0.25;
+    opacity: $bounceEnds;
   }
 }
 
@@ -149,7 +150,7 @@ $fade-in-speed: 5s;
     opacity: 75%
   }
   100% {
-    opacity: 0.25;
+    opacity: $bounceEnds;
   }
 }
 
@@ -161,7 +162,7 @@ $fade-in-speed: 5s;
     opacity: 75%
   }
   100% {
-    opacity: 0.25;
+    opacity: $bounceEnds;
   }
 }
 
@@ -173,7 +174,7 @@ $fade-in-speed: 5s;
     opacity: 75%
   }
   100% {
-    opacity: 0.25;
+    opacity: $bounceEnds;
   }
 }
 
@@ -185,6 +186,6 @@ $fade-in-speed: 5s;
     opacity: 75%
   }
   100% {
-    opacity: 0.25;
+    opacity: $bounceEnds;
   }
 }
